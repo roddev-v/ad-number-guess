@@ -21,7 +21,7 @@ class _GuessingCardState extends State<GuessingCard> {
         builder: (BuildContext context) => AlertDialog(
               title: Text(title),
               content: Text(message),
-              actions: [
+              actions: <Widget>[
                 TextButton(
                     onPressed: () {
                       setState(() {
@@ -64,7 +64,7 @@ class _GuessingCardState extends State<GuessingCard> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Text(
                 'You have $lives left',
                 style: TextStyle(color: getColor(lives)),
@@ -92,12 +92,12 @@ class _GuessingCardState extends State<GuessingCard> {
 
 class HintMessage extends StatelessWidget {
   HintMessage(this.desiredNumber, this.guessedNumber) {
-    print(desiredNumber);
-    print(guessedNumber);
+    print('To be found $desiredNumber.');
+    print('Actual input $guessedNumber.');
   }
 
-  int desiredNumber;
-  int guessedNumber;
+  final int desiredNumber;
+  final int guessedNumber;
 
   String getMessage() {
     if (guessedNumber == null) {
@@ -116,13 +116,9 @@ class HintMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          getMessage(),
-          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-        )
-      ],
+    return Text(
+      getMessage(),
+      style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
     );
   }
 }
