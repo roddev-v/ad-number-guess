@@ -1,6 +1,6 @@
 # number_guessing
 
-A new Flutter application.
+A number guessing app made with Flutter
 
 ## Getting Started
 
