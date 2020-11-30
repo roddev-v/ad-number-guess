@@ -12,7 +12,6 @@ class _GuessingCardState extends State<GuessingCard> {
   final TextEditingController textEditController = TextEditingController();
   int toBeGuessed = Random().nextInt(100);
   int inputNumber;
-
   int lives = 5;
 
   void showAlert(BuildContext context, String title, String message) {
@@ -32,10 +31,8 @@ class _GuessingCardState extends State<GuessingCard> {
                         Navigator.of(context).pop();
                       });
                     },
-                    child: const Text(
-                      'Try again',
-                      style: TextStyle(color: Colors.blue),
-                    ))
+                    child: const Text('Try again',
+                        style: TextStyle(color: Colors.blue)))
               ],
             ));
   }
@@ -58,10 +55,6 @@ class _GuessingCardState extends State<GuessingCard> {
     });
   }
 
-  Color getColor() {
-    return lives > 3 ? Colors.green : Colors.red;
-  }
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -74,7 +67,7 @@ class _GuessingCardState extends State<GuessingCard> {
             children: [
               Text(
                 'You have $lives left',
-                style: TextStyle(color: getColor()),
+                style: TextStyle(color: getColor(lives)),
               ),
               HintMessage(toBeGuessed, inputNumber),
               TextField(
@@ -103,10 +96,10 @@ class HintMessage extends StatelessWidget {
     print(guessedNumber);
   }
 
-  int desiredNumber = -1;
-  int guessedNumber = -1;
+  int desiredNumber;
+  int guessedNumber;
 
-  String getMessage(BuildContext context) {
+  String getMessage() {
     if (guessedNumber == null) {
       return '';
     }
@@ -126,7 +119,7 @@ class HintMessage extends StatelessWidget {
     return Column(
       children: [
         Text(
-          getMessage(context),
+          getMessage(),
           style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
         )
       ],
