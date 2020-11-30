@@ -11,7 +11,56 @@ class GuessingCard extends StatefulWidget {
 class _GuessingCardState extends State<GuessingCard> {
   final TextEditingController textEditController = TextEditingController();
   int toBeGuessed = Random().nextInt(100);
-  int inputNumber = -1;
+  int inputNumber;
+
+  int lives = 5;
+
+  void showAlert(BuildContext context, String title, String message) {
+    showDialog<dynamic>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(title),
+              content: Text(message),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      setState(() {
+                        lives = 5;
+                        toBeGuessed = Random().nextInt(100);
+                        inputNumber = null;
+                        Navigator.of(context).pop();
+                      });
+                    },
+                    child: const Text(
+                      'Try again',
+                      style: TextStyle(color: Colors.blue),
+                    ))
+              ],
+            ));
+  }
+
+  void updateState() {
+    setState(() {
+      final String value = textEditController.value.text;
+      if (isNumeric(value)) {
+        inputNumber = int.tryParse(value);
+        textEditController.clear();
+        lives--;
+        if (lives == 0) {
+          showAlert(context, 'Ooops....',
+              'The number was $toBeGuessed. Don\'t quit already');
+        }
+        if (inputNumber == toBeGuessed) {
+          showAlert(context, 'You got it', 'The number was $toBeGuessed');
+        }
+      }
+    });
+  }
+
+  Color getColor() {
+    return lives > 3 ? Colors.green : Colors.red;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +72,10 @@ class _GuessingCardState extends State<GuessingCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                'You have $lives left',
+                style: TextStyle(color: getColor()),
+              ),
               HintMessage(toBeGuessed, inputNumber),
               TextField(
                 controller: textEditController,
@@ -31,14 +84,7 @@ class _GuessingCardState extends State<GuessingCard> {
               ),
               Center(
                 child: FlatButton(
-                  onPressed: () {
-                    setState(() {
-                      final String value = textEditController.value.text;
-                      if (isNumeric(value)) {
-                        inputNumber = int.tryParse(value);
-                      }
-                    });
-                  },
+                  onPressed: () => updateState(),
                   child: const Text('Guess'),
                   color: Colors.black12,
                 ),
@@ -61,7 +107,7 @@ class HintMessage extends StatelessWidget {
   int guessedNumber = -1;
 
   String getMessage(BuildContext context) {
-    if (desiredNumber == -1 || guessedNumber == -1) {
+    if (guessedNumber == null) {
       return '';
     }
     if (desiredNumber < guessedNumber) {
@@ -69,20 +115,10 @@ class HintMessage extends StatelessWidget {
     } else if (desiredNumber > guessedNumber) {
       return 'Enter a bigger number. You entered $guessedNumber';
     } else if (desiredNumber == guessedNumber) {
-      showAlert(context);
       return 'You got it!. The number was $guessedNumber';
     } else {
       return '';
     }
-  }
-
-  void showAlert(BuildContext context) {
-    showDialog<dynamic>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text('You got it!'),
-              content: Text('The number was $desiredNumber'),
-            ));
   }
 
   @override
